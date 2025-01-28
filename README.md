@@ -18,9 +18,9 @@ O projeto busca aplicar os conceitos fundamentais de banco de dados relacionais,
 
 # Como Executar o Projeto
 - Clone o repositório:
-bash
-Copiar
-Editar
-git clone [link-do-repositorio]
-Importe o script SQL para criar o banco de dados.
-Execute o programa CRUD para interagir com o banco de dados.
+- bash
+- Copiar
+- Editar
+- git clone [link-do-repositorio]
+- Importe o script SQL para criar o banco de dados.
+- Execute o programa CRUD para interagir com o banco de dados.
