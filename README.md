@@ -24,3 +24,6 @@ O projeto busca aplicar os conceitos fundamentais de banco de dados relacionais,
 - git clone [link-do-repositorio]
 - Importe o script SQL para criar o banco de dados.
 - Execute o programa CRUD para interagir com o banco de dados.
+
+# Comandos Uteis
+ - pip install psycopg2-binary ( Para fazer a conexão com o banco )
