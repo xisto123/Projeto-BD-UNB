@@ -1,1 +1,0 @@
-#Aqui ficará o script de inserção de dados no banco de dados dos 5 registros em cada tabela.

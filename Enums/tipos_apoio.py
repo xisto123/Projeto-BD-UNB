@@ -7,6 +7,7 @@ class TipoUsuario(Enum):
     USUARIO = 2
     FISCAL = 3
     VISITANTE = 4
+    CONVIDADO = 5
 
 class TipoNotificacao(Enum):
     PARTIDA_QUASE_INICIANDO = 1
@@ -50,3 +51,17 @@ class StatusResultadoAposta(Enum):
     REEMBOLSADO = 3
     CANCELADO = 4
     AGUARDANDO_RESULTADO = 5
+
+class TipoPartida(Enum):
+    REGULAR = 1
+    AMISTOSO = 2
+    ELIMINATORIA = 3
+    FINAL = 4
+    SEMIFINAL = 5
+
+class StatusPartida(Enum):
+    AGENDADA = 1
+    EM_ANDAMENTO = 2
+    ENCERRADA = 3
+    CANCELADA = 4
+    ADIANTADA = 5

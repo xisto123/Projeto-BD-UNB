@@ -1,1 +1,0 @@
-#Aqui ficará o script de criacao das procedures do banco de dados.

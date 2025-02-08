@@ -4,6 +4,9 @@
 -- Conectando ao banco de dados criado
 -- \c sistema_apostas;
 
+-- Início da transação
+BEGIN;
+
 -- Script para limpar as tabelas antes de criar novamente (removendo dependências)
 DROP TABLE IF EXISTS Resultado_Aposta CASCADE;
 DROP TABLE IF EXISTS Aposta CASCADE;
@@ -17,12 +20,12 @@ DROP TABLE IF EXISTS Transacao CASCADE;
 DROP TABLE IF EXISTS Carteira CASCADE;
 DROP TABLE IF EXISTS Arquivo CASCADE;
 DROP TABLE IF EXISTS Notificacao CASCADE;
-DROP TABLE IF EXISTS Notificacao_Lote CASCADE;
 DROP TABLE IF EXISTS Login CASCADE;
 DROP TABLE IF EXISTS Usuario CASCADE;
 DROP TABLE IF EXISTS Tipo_Usuario CASCADE;
 DROP TABLE IF EXISTS Tipo_Notificacao CASCADE;
 DROP TABLE IF EXISTS Status_Carteira CASCADE;
+DROP TABLE IF EXISTS Status_Partida CASCADE;
 DROP TABLE IF EXISTS Tipo_Transacao CASCADE;
 DROP TABLE IF EXISTS Tipo_Competicao CASCADE;
 DROP TABLE IF EXISTS Tipo_Partida CASCADE;
@@ -64,6 +67,12 @@ CREATE TABLE Tipo_Partida (
     descricao VARCHAR(50) NOT NULL
 );
 
+-- Criação da tabela Status_Partida
+CREATE TABLE Status_Partida (
+    id_status_partida SERIAL PRIMARY KEY,
+    descricao VARCHAR(50) NOT NULL
+);
+
 -- Criação da tabela de apoio Status_Resultado_Aposta
 CREATE TABLE Status_Resultado_Aposta (
     id_status_resultado_aposta SERIAL PRIMARY KEY,
@@ -80,34 +89,27 @@ CREATE TABLE Usuario (
     id_tipo_usuario INT REFERENCES Tipo_Usuario(id_tipo_usuario) ON DELETE CASCADE,
     status VARCHAR(20) DEFAULT 'ativo' CHECK (status IN ('ativo', 'inativo')),
     dt_nascimento DATE,
-    dt_hora_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    dt_hora_registro TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 -- Criação da tabela Login
 CREATE TABLE Login (
     id_login SERIAL PRIMARY KEY,
     id_usuario INT REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
-    dt_hora_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dt_hora_login TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0),
     endereco_ip VARCHAR(45),
     sucesso BOOLEAN
-);
-
--- Criação da tabela Notificacao_Lote
-CREATE TABLE Notificacao_Lote (
-    id_notificacao_lote SERIAL PRIMARY KEY,
-    id_tipo_notificacao INT REFERENCES Tipo_Notificacao(id_tipo_notificacao) ON DELETE CASCADE,
-    titulo VARCHAR(100) NOT NULL,
-    conteudo TEXT NOT NULL,
-    dt_hora_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Criação da tabela Notificacao
 CREATE TABLE Notificacao (
     id_notificacao SERIAL PRIMARY KEY,
-    id_notificacao_lote INT REFERENCES Notificacao_Lote(id_notificacao_lote) ON DELETE CASCADE,
     id_usuario INT REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
+    id_tipo_notificacao INT REFERENCES Tipo_Notificacao(id_tipo_notificacao) ON DELETE CASCADE,
+    titulo VARCHAR(100) NOT NULL,
+    conteudo TEXT NOT NULL,
     status_leitura BOOLEAN DEFAULT FALSE,
-    dt_hora_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    dt_hora_envio TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 -- Criação da tabela Arquivo
@@ -119,7 +121,7 @@ CREATE TABLE Arquivo (
     mime_type VARCHAR(50),
     size_mb DECIMAL(10, 2),
     binary_data BYTEA,
-    dt_hora_upload TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    dt_hora_upload TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 -- Criação da tabela Carteira
@@ -129,8 +131,8 @@ CREATE TABLE Carteira (
     tipo VARCHAR(20) DEFAULT 'principal',
     saldo DECIMAL(12, 2) DEFAULT 0.00,
     id_status_carteira INT REFERENCES Status_Carteira(id_status_carteira) ON DELETE CASCADE,
-    dt_hora_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    dt_hora_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    dt_hora_registro TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0),
+    dt_hora_atualizacao TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 -- Criação da tabela Transacao
@@ -140,7 +142,7 @@ CREATE TABLE Transacao (
     id_tipo_transacao INT REFERENCES Tipo_Transacao(id_tipo_transacao) ON DELETE CASCADE,
     valor DECIMAL(12, 2) NOT NULL,
     descricao TEXT,
-    dt_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    dt_hora TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 -- Criação da tabela Competicao
@@ -167,7 +169,7 @@ CREATE TABLE Partida (
     estadio VARCHAR(100),
     dt_hora_inicio TIMESTAMP,
     id_tipo_partida INT REFERENCES Tipo_Partida(id_tipo_partida) ON DELETE CASCADE,
-    status VARCHAR(20) DEFAULT 'agendada'
+    id_status_partida INT REFERENCES Status_Partida(id_status_partida) ON DELETE CASCADE
 );
 
 -- Criação da tabela Resultado_Partida_Equipe
@@ -198,8 +200,8 @@ CREATE TABLE Odd (
     id_mercado INT REFERENCES Mercado_Aposta(id_mercado) ON DELETE CASCADE,
     valor DECIMAL(5, 2) NOT NULL,
     descricao VARCHAR(255),
-    dt_hora_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    dt_hora_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    dt_hora_criacao TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0),
+    dt_hora_atualizacao TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 -- Criação da tabela Aposta
@@ -208,8 +210,9 @@ CREATE TABLE Aposta (
     id_usuario INT REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
     id_odd INT REFERENCES Odd(id_odd) ON DELETE CASCADE,
     valor DECIMAL(12, 2) NOT NULL,
+    resultado INTEGER,
     status VARCHAR(20) DEFAULT 'ativa' CHECK (status IN ('ativa', 'inativa')),
-    dt_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    dt_hora TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 -- Criação da tabela Resultado_Aposta
@@ -218,5 +221,10 @@ CREATE TABLE Resultado_Aposta (
     id_aposta INT REFERENCES Aposta(id_aposta) ON DELETE CASCADE,
     valor_recebido DECIMAL(12, 2) DEFAULT 0.00,
     id_status_resultado_aposta INT REFERENCES Status_Resultado_Aposta(id_status_resultado_aposta) ON DELETE CASCADE,
-    dt_hora_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    dt_hora_registro TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP(0)
 );
+
+-- Fim da transação
+COMMIT;
+
+-- ROLLBACK;
