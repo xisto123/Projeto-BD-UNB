@@ -1,4 +1,5 @@
 DROP PROCEDURE IF EXISTS encerrar_partida;
+DROP PROCEDURE IF EXISTS cadastrar_usuario_bonus;
 
 CREATE OR REPLACE PROCEDURE encerrar_partida(
     p_id_partida                INTEGER,
@@ -115,6 +116,65 @@ BEGIN
            SET status = 'inativa'
          WHERE id_aposta = rec.id_aposta;
     END LOOP;
+    
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE cadastrar_usuario_bonus(
+    p_nome            VARCHAR,
+    p_cpf             VARCHAR,
+    p_email           VARCHAR,
+    p_senha           VARCHAR,
+    p_id_tipo_usuario INTEGER,
+    p_dt_nascimento   DATE,
+    p_foto            BYTEA,
+    p_foto_nome       VARCHAR,
+    p_foto_mime       VARCHAR,
+    p_foto_size_mb    DECIMAL
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_id_usuario  INTEGER;
+    v_id_carteira INTEGER;
+BEGIN
+    -- 1. Inserir o usuário na tabela Usuario
+    INSERT INTO Usuario (nome, cpf, email, senha, id_tipo_usuario, status, dt_nascimento)
+    VALUES (p_nome, p_cpf, p_email, p_senha, p_id_tipo_usuario, 'ativo', p_dt_nascimento)
+    RETURNING id_usuario INTO v_id_usuario;
+    
+    -- 2. Inserir a foto do usuário na tabela Arquivo (se fornecida)
+    IF p_foto IS NOT NULL THEN
+        INSERT INTO Arquivo (
+            id_usuario, nome, descricao, mime_type, size_mb, binary_data, dt_hora_upload
+        )
+        VALUES (
+            v_id_usuario, p_foto_nome, 'Foto de perfil cadastrada', p_foto_mime, p_foto_size_mb, p_foto, CURRENT_TIMESTAMP
+        );
+    END IF;
+    
+    -- 3. Inserir notificação de Bem-vindo (assumindo id_tipo_notificacao = 7 para BEM_VINDO)
+    INSERT INTO Notificacao (id_tipo_notificacao, titulo, conteudo, dt_hora_envio, id_usuario)
+    VALUES (7, 'Bem-vindo!', 'Seja bem-vindo ao sistema!', CURRENT_TIMESTAMP, v_id_usuario);
+    
+    -- 4. Criar carteira para o usuário na tabela Carteira (assumindo id_status_carteira = 1 para ativo)
+    INSERT INTO Carteira (id_usuario, tipo, saldo, id_status_carteira, dt_hora_registro, dt_hora_atualizacao)
+    VALUES (v_id_usuario, 'principal', 0.00, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    RETURNING id_carteira INTO v_id_carteira;
+    
+    -- 5. Inserir transação de bônus na tabela Transacao (assumindo id_tipo_transacao = 4 para bônus)
+    INSERT INTO Transacao (id_carteira, id_tipo_transacao, valor, descricao, dt_hora)
+    VALUES (v_id_carteira, 4, 500.00, 'Bônus de cadastro', CURRENT_TIMESTAMP);
+    
+    -- 6. Atualizar o saldo da carteira para incluir o bônus
+    UPDATE Carteira
+       SET saldo = saldo + 500.00,
+           dt_hora_atualizacao = CURRENT_TIMESTAMP
+     WHERE id_carteira = v_id_carteira;
+    
+    -- 7. Inserir notificação informando que o usuário recebeu bônus (assumindo id_tipo_notificacao = 8 para VOCE_RECEBEU_BONUS)
+    INSERT INTO Notificacao (id_tipo_notificacao, titulo, conteudo, dt_hora_envio, id_usuario)
+    VALUES (8, 'Você recebeu bônus!', 'Um bônus de 500 foi creditado em sua carteira.', CURRENT_TIMESTAMP, v_id_usuario);
     
 END;
 $$;

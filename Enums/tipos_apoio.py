@@ -4,7 +4,7 @@ from enum import Enum
 
 class TipoUsuario(Enum):
     ADMIN = 1
-    USUARIO = 2
+    APOSTADOR = 2
     FISCAL = 3
     VISITANTE = 4
     CONVIDADO = 5
@@ -16,6 +16,8 @@ class TipoNotificacao(Enum):
     VOCE_GANHOU = 4
     VOCE_PERDEU = 5
     MUDANCA_ODDS = 6
+    BEM_VINDO = 7
+    VOCE_RECEBEU_BONUS = 8
 
 class StatusCarteira(Enum):
     ATIVO = 1

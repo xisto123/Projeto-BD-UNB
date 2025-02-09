@@ -8,7 +8,7 @@ BEGIN;
 -- Tipo_Usuario
 INSERT INTO Tipo_Usuario (id_tipo_usuario, descricao) VALUES
 (1, 'ADMIN'),
-(2, 'USUARIO'),
+(2, 'APOSTADOR'),
 (3, 'FISCAL'),
 (4, 'VISITANTE'),
 (5, 'CONVIDADO');
@@ -20,7 +20,9 @@ INSERT INTO Tipo_Notificacao (id_tipo_notificacao, descricao) VALUES
 (3, 'PARTIDA_ENCERRADA'),
 (4, 'VOCE_GANHOU'),
 (5, 'VOCE_PERDEU'),
-(6, 'MUDANCA_ODDS');
+(6, 'MUDANCA_ODDS'),
+(7, 'BEM_VINDO'),
+(8, 'VOCE_RECEBEU_BONUS');
 
 -- Status_Carteira
 INSERT INTO Status_Carteira (id_status_carteira, descricao) VALUES

@@ -27,3 +27,4 @@ O projeto busca aplicar os conceitos fundamentais de banco de dados relacionais,
 
 # Comandos Uteis
  - pip install psycopg2-binary ( Para fazer a conexão com o banco )
+ - pip install Pillow ( Imagens )

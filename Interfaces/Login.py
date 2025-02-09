@@ -2,7 +2,9 @@
 import tkinter as tk
 from tkinter import messagebox
 from Interfaces.Cadastro import CadastroScreen
+from Interfaces.Principal import PrincipalScreen
 from Services.Helper.window_size import set_window_size
+from Services.auth_service import login
 
 class LoginScreen(tk.Tk):
     def __init__(self):
@@ -39,29 +41,39 @@ class LoginScreen(tk.Tk):
         self.button_frame.pack(pady=20)
 
         # Botão para login
-        self.btn_login = tk.Button(self.button_frame, text="Login", command=self.validate_login, borderwidth=10)
+        self.btn_login = tk.Button(self.button_frame, text="Login", command=self.abrir_tela_principal, borderwidth=10)
         self.btn_login.pack(side=tk.LEFT, padx=5)
 
         # Botão para cadastrar-se
-        self.btn_register = tk.Button(self.button_frame, text="Cadastrar-se", command=self.abrir_cadastro, borderwidth=10)
+        self.btn_register = tk.Button(self.button_frame, text="Cadastrar-se", command=self.abrir_tela_cadastro, borderwidth=10)
         self.btn_register.pack(side=tk.LEFT, padx=5)
 
     def validate_login(self):
         cpf = self.entry_cpf.get()
         password = self.entry_password.get()
-        
-        # Aqui você pode integrar com a camada de services para validar o login
-        # Exemplo simples de validação:
-        if cpf == "admin" and password == "admin":
+
+        if login(cpf, password):
+            self.limparCampos()
             messagebox.showinfo("Login", "Login realizado com sucesso!")
+            self.abrir_tela_principal()
             # Aqui você pode chamar a próxima tela ou função da aplicação
         else:
+            self.limparCampos()
             messagebox.showerror("Login", "Usuário ou senha incorretos.")
 
-    def abrir_cadastro(self):
+    def abrir_tela_cadastro(self):
         self.destroy()
         cadastro_window = CadastroScreen()
         cadastro_window.mainloop()
+
+    def abrir_tela_principal(self):
+        self.destroy()
+        cadastro_window = PrincipalScreen()
+        cadastro_window.mainloop()
+
+    def limparCampos(self):
+        self.entry_cpf.delete(0, tk.END)
+        self.entry_password.delete(0, tk.END)
     
 if __name__ == "__main__":
     app = LoginScreen()
