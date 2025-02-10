@@ -1,7 +1,8 @@
 import tkinter as tk
 from Services.Helper.window_size import set_window_size
 import Services.global_data as global_data
-from Interfaces.Perfil import PerfilScreen
+from Interfaces.VisualizarUsuario import PerfilScreen
+from Interfaces.Notificacoes import NotificacoesScreen
 
 class PrincipalScreen(tk.Tk):
     def __init__(self):
@@ -34,22 +35,22 @@ class PrincipalScreen(tk.Tk):
         btn_frame.pack(expand=True)
 
         # Configurando as linhas e colunas para que tenham peso igual e centralizem os botões
-        for i in range(2):
-            btn_frame.grid_rowconfigure(i, weight=1)
+        btn_frame.grid_rowconfigure(0, weight=1)
+        for i in range(3):
             btn_frame.grid_columnconfigure(i, weight=1)
 
         # Botões com tamanho quadrangular (os parâmetros width e height podem ser ajustados)
         btn_meu_perfil = tk.Button(btn_frame, text="Meu Perfil", width=20, height=5, bg="lightblue", command=self.abrir_tela_meuPerfil)
         btn_meu_perfil.grid(row=0, column=0, padx=10, pady=10)
 
-        btn_notificacoes = tk.Button(btn_frame, text="Notificações", width=20, height=5, bg="lightcoral")
+        btn_notificacoes = tk.Button(btn_frame, text="Notificações", width=20, height=5, bg="lightgreen", command=self.abrir_tela_notificacoes)
         btn_notificacoes.grid(row=0, column=1, padx=10, pady=10)
 
         btn_realizar_aposta = tk.Button(btn_frame, text="Apostas", width=20, height=5, bg="lightpink")
-        btn_realizar_aposta.grid(row=1, column=0, padx=10, pady=10)
+        btn_realizar_aposta.grid(row=0, column=2, padx=10, pady=10)
 
-        btn_carteira = tk.Button(btn_frame, text="Carteira", width=20, height=5, bg="lightgreen")
-        btn_carteira.grid(row=1, column=1, padx=10, pady=10)
+        # btn_carteira = tk.Button(btn_frame, text="Carteira", width=20, height=5, bg="lightgreen")
+        # btn_carteira.grid(row=1, column=1, padx=10, pady=10)
 
         # Estilizando os botões para que tenham borda e sombra
         button_style = {
@@ -60,7 +61,6 @@ class PrincipalScreen(tk.Tk):
         btn_meu_perfil.config(**button_style)
         btn_notificacoes.config(**button_style)
         btn_realizar_aposta.config(**button_style)
-        btn_carteira.config(**button_style)
 
         # Adicionando sombra aos botões
         def add_shadow(widget):
@@ -70,27 +70,21 @@ class PrincipalScreen(tk.Tk):
         add_shadow(btn_meu_perfil)
         add_shadow(btn_notificacoes)
         add_shadow(btn_realizar_aposta)
-        add_shadow(btn_carteira)
-
-        # def abrir_tela_notificacoes(self):
-        #     self.destroy()
-        #     cadastro_window = PrincipalScreen()
-        #     cadastro_window.mainloop()
-
-        # def abrir_tela_apostas(self):
-        #     self.destroy()
-        #     cadastro_window = PrincipalScreen()
-        #     cadastro_window.mainloop()
-
-        # def abrir_tela_carteira(self):
-        #     self.destroy()
-        #     cadastro_window = PrincipalScreen()
-        #     cadastro_window.mainloop()
     
     def abrir_tela_meuPerfil(self):
         self.destroy()
         cadastro_window = PerfilScreen()
         cadastro_window.mainloop()
+
+    def abrir_tela_notificacoes(self):
+        self.destroy()
+        cadastro_window = NotificacoesScreen()
+        cadastro_window.mainloop()
+
+    # def abrir_tela_apostas(self):
+    #     self.destroy()
+    #     cadastro_window = PrincipalScreen()
+    #     cadastro_window.mainloop()
 
 if __name__ == "__main__":
     app = PrincipalScreen()

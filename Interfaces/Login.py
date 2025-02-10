@@ -3,8 +3,10 @@ import tkinter as tk
 from tkinter import messagebox
 from Interfaces.Cadastro import CadastroScreen
 from Interfaces.Principal import PrincipalScreen
+from Interfaces.PrincipalAdm import PrincipalAdmScreen
 from Services.Helper.window_size import set_window_size
 from Services.auth_service import login
+import Services.global_data as global_data
 
 class LoginScreen(tk.Tk):
     def __init__(self):
@@ -41,7 +43,8 @@ class LoginScreen(tk.Tk):
         self.button_frame.pack(pady=20)
 
         # Botão para login
-        self.btn_login = tk.Button(self.button_frame, text="Login", command=self.abrir_tela_principal, borderwidth=10)
+        # Aqui eu estou fornçando para ir para a tela principal do usuário ADM
+        self.btn_login = tk.Button(self.button_frame, text="Login", command=self.abrir_tela_principal_adm, borderwidth=10)
         self.btn_login.pack(side=tk.LEFT, padx=5)
 
         # Botão para cadastrar-se
@@ -55,8 +58,11 @@ class LoginScreen(tk.Tk):
         if login(cpf, password):
             self.limparCampos()
             messagebox.showinfo("Login", "Login realizado com sucesso!")
-            self.abrir_tela_principal()
-            # Aqui você pode chamar a próxima tela ou função da aplicação
+
+            if global_data.usuario_tipo == 1:
+                self.abrir_tela_principal_adm()
+            else:
+                self.abrir_tela_principal()
         else:
             self.limparCampos()
             messagebox.showerror("Login", "Usuário ou senha incorretos.")
@@ -69,6 +75,11 @@ class LoginScreen(tk.Tk):
     def abrir_tela_principal(self):
         self.destroy()
         cadastro_window = PrincipalScreen()
+        cadastro_window.mainloop()
+
+    def abrir_tela_principal_adm(self):
+        self.destroy()
+        cadastro_window = PrincipalAdmScreen()
         cadastro_window.mainloop()
 
     def limparCampos(self):

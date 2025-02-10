@@ -72,6 +72,7 @@ INSERT INTO Status_Resultado_Aposta (id_status_resultado_aposta, descricao) VALU
 (4, 'CANCELADO'),
 (5, 'AGUARDANDO_RESULTADO');
 
+
 -----------------------------------------------------------
 -- 2. Inserções nas tabelas principais
 -----------------------------------------------------------

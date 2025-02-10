@@ -112,7 +112,7 @@ class EditarUsuarioScreen(tk.Tk):
 
         if usuario_atualizado:
             messagebox.showinfo("Sucesso", "Dados atualizados com sucesso!")
-            # self.destroy()
+            self.destroy()
         else:
             messagebox.showerror("Erro", "Falha ao atualizar os dados.")
 

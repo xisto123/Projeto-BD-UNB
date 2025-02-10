@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
-from Services.Helper.window_size import set_window_size
 from Enums.tipos_apoio import TipoUsuario
 from Models.usuario import Usuario
 import Services.global_data as global_data
+from Services.Helper.window_size import set_window_size
 from Interfaces.EditarUsuario import EditarUsuarioScreen
 
 class PerfilScreen(tk.Tk):

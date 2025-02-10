@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS encerrar_partida;
-DROP PROCEDURE IF EXISTS cadastrar_usuario_bonus;
+DROP PROCEDURE IF EXISTS cadastrar_usuario_completo;
 
 CREATE OR REPLACE PROCEDURE encerrar_partida(
     p_id_partida                INTEGER,
@@ -120,7 +120,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE cadastrar_usuario_bonus(
+CREATE OR REPLACE PROCEDURE cadastrar_usuario_completo(
     p_nome            VARCHAR,
     p_cpf             VARCHAR,
     p_email           VARCHAR,

@@ -1,6 +1,7 @@
-from Database.repository import call_sp_cadastrar_usuario_bonus
+from Database.repository import call_sp_cadastrar_usuario_completo
 from Enums.tipos_apoio import TipoUsuario
 import datetime
+import re
 
 def cadastrar_usuario_completo(nome, cpf, email, senha, tipo_usuario_label, dt_nascimento_str, foto_info):
     """
@@ -15,6 +16,15 @@ def cadastrar_usuario_completo(nome, cpf, email, senha, tipo_usuario_label, dt_n
     
     Retorna True se o cadastro for realizado com sucesso, False caso contrário.
     """
+    # Validar o formato do email
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if not re.match(email_regex, email):
+        raise ValueError("Formato de email inválido.")
+    
+    # Validar o número de caracteres do CPF
+    if len(cpf) != 11:
+        raise ValueError("O CPF deve conter 11 caracteres.")
+    
     # Converter a data de nascimento
     try:
         dt_nascimento = datetime.datetime.strptime(dt_nascimento_str, '%Y-%m-%d').date()
@@ -28,7 +38,7 @@ def cadastrar_usuario_completo(nome, cpf, email, senha, tipo_usuario_label, dt_n
         raise ValueError("Tipo de usuário inválido.")
     
     # Chama a função que invoca a procedure na camada repository
-    sucesso = call_sp_cadastrar_usuario_bonus(
+    sucesso = call_sp_cadastrar_usuario_completo(
         p_nome=nome,
         p_cpf=cpf,
         p_email=email,
