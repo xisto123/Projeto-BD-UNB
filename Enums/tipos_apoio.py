@@ -32,6 +32,9 @@ class TipoTransacao(Enum):
     RETIRADA = 3
     BONUS = 4
     REEMBOLSO = 5
+    APOSTA = 6
+    AUMENTO_APOSTA = 7
+    REDUCAO_APOSTA = 8
 
 class TipoCompeticao(Enum):
     CAMPEONATO = 1

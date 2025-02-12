@@ -13,7 +13,7 @@ def login(cpf, senha):
 
             global_data.usuario_id = usuario.id_usuario
             global_data.usuario_nome = usuario.nome
-            # global_data.usuario_tipo = usuario.id_tipo_usuario
+            global_data.usuario_tipo = usuario.id_tipo_usuario
 
             print("Login realizado com sucesso!")
         else:

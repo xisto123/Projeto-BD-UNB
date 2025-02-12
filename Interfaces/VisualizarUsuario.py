@@ -9,12 +9,23 @@ from Interfaces.EditarUsuario import EditarUsuarioScreen
 class PerfilScreen(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Tela de Perfil de Usuário")
+        self.title("Perfil")
         set_window_size(self, 0.8, 0.7)
         self.create_widgets()
         self.buscar_usuario()
 
     def create_widgets(self):
+        # Frame superior para exibir a foto do usuário centralizada horizontalmente
+        top_frame = tk.Frame(self)
+        top_frame.pack(side=tk.TOP, fill=tk.X, pady=10)
+
+        if global_data.usuario_foto is not None:
+            # A foto deve estar em um formato compatível com Tkinter
+            self.lbl_foto = tk.Label(top_frame, image=global_data.usuario_foto)
+        else:
+            self.lbl_foto = tk.Label(top_frame, text="Foto não disponível", width=18, height=10, relief="solid")
+        self.lbl_foto.pack(anchor="center")
+
         # Container principal centralizado
         self.container = tk.Frame(self)
         self.container.place(relx=0.5, rely=0.5, anchor=tk.CENTER)

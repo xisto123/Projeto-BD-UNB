@@ -39,6 +39,7 @@ INSERT INTO Tipo_Transacao (id_tipo_transacao, descricao) VALUES
 (3, 'RETIRADA'),
 (4, 'BONUS'),
 (5, 'REEMBOLSO');
+(6, 'APOSTA');
 
 -- Tipo_Competicao
 INSERT INTO Tipo_Competicao (id_tipo_competicao, descricao) VALUES

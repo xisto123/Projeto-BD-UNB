@@ -44,7 +44,7 @@ class LoginScreen(tk.Tk):
 
         # Botão para login
         # Aqui eu estou fornçando para ir para a tela principal do usuário ADM
-        self.btn_login = tk.Button(self.button_frame, text="Login", command=self.abrir_tela_principal_adm, borderwidth=10)
+        self.btn_login = tk.Button(self.button_frame, text="Login", command=self.validate_login, borderwidth=10)
         self.btn_login.pack(side=tk.LEFT, padx=5)
 
         # Botão para cadastrar-se
@@ -72,14 +72,14 @@ class LoginScreen(tk.Tk):
         cadastro_window = CadastroScreen()
         cadastro_window.mainloop()
 
-    def abrir_tela_principal(self):
-        self.destroy()
-        cadastro_window = PrincipalScreen()
-        cadastro_window.mainloop()
-
     def abrir_tela_principal_adm(self):
         self.destroy()
         cadastro_window = PrincipalAdmScreen()
+        cadastro_window.mainloop()
+
+    def abrir_tela_principal(self):
+        self.destroy()
+        cadastro_window = PrincipalScreen()
         cadastro_window.mainloop()
 
     def limparCampos(self):

@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from Models.base_model import BaseModel
 
 class Carteira(BaseModel):
@@ -19,3 +20,23 @@ class Carteira(BaseModel):
         return (f"Carteira(id_carteira={self.id_carteira}, id_usuario={self.id_usuario}, "
                 f"tipo={self.tipo}, saldo={self.saldo}, id_status_carteira={self.id_status_carteira}, "
                 f"dt_hora_registro={self.dt_hora_registro}, dt_hora_atualizacao={self.dt_hora_atualizacao})")
+    
+    @classmethod
+    def get_saldo_usuario(cls, id_usuario):
+        carteira = cls.get_by("id_usuario", id_usuario)
+        if carteira:
+            # Retorna o saldo assumindo que esteja na posição 3 da tupla.
+            return carteira[0][3]
+        return None
+    
+    @classmethod
+    def verifica_saldo(cls, id_usuario, valor_aposta=0):
+        saldo = cls.get_saldo_usuario(id_usuario)
+        try:
+            aposta = valor_aposta if isinstance(valor_aposta, Decimal) else Decimal(valor_aposta)
+        except Exception:
+            return False
+
+        if saldo is not None:
+            return saldo >= aposta
+        return False

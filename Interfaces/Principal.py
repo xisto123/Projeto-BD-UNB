@@ -3,6 +3,8 @@ from Services.Helper.window_size import set_window_size
 import Services.global_data as global_data
 from Interfaces.VisualizarUsuario import PerfilScreen
 from Interfaces.Notificacoes import NotificacoesScreen
+from Interfaces.CriarAposta import CriarApostaScreen
+from Interfaces.Aposta import ApostaScreen
 
 class PrincipalScreen(tk.Tk):
     def __init__(self):
@@ -18,25 +20,16 @@ class PrincipalScreen(tk.Tk):
 
         # Título com o nome do usuário logado e "Menu Principal"
         titulo_texto = f"Bem vindo {global_data.usuario_nome} ao Menu Principal"
-        self.lbl_titulo = tk.Label(top_frame, text=titulo_texto, font=("Helvetica", 24), justify=tk.LEFT)
-        self.lbl_titulo.pack(side=tk.LEFT, anchor=tk.NW)
+        self.lbl_titulo = tk.Label(top_frame, text=titulo_texto, font=("Helvetica", 24))
+        self.lbl_titulo.pack(side=tk.TOP, pady=10)
 
-        # Exibição da foto do usuário no canto superior direito
-        if global_data.usuario_foto is not None:
-            # A foto já deve estar em um formato compatível (ex: PhotoImage)
-            self.lbl_foto = tk.Label(top_frame, image=global_data.usuario_foto)
-            self.lbl_foto.pack(side=tk.RIGHT, anchor=tk.NE)
-        else:
-            self.lbl_foto = tk.Label(top_frame, text="Foto não disponível", width=18, height=10, relief="solid")
-            self.lbl_foto.pack(side=tk.RIGHT, anchor=tk.NE)
-
-        # Frame central para os botões organizados em formato de quadrado (2x2)
+        # Frame central para os botões organizados em formato de quadrado
         btn_frame = tk.Frame(self)
         btn_frame.pack(expand=True)
 
         # Configurando as linhas e colunas para que tenham peso igual e centralizem os botões
         btn_frame.grid_rowconfigure(0, weight=1)
-        for i in range(3):
+        for i in range(4):
             btn_frame.grid_columnconfigure(i, weight=1)
 
         # Botões com tamanho quadrangular (os parâmetros width e height podem ser ajustados)
@@ -46,11 +39,11 @@ class PrincipalScreen(tk.Tk):
         btn_notificacoes = tk.Button(btn_frame, text="Notificações", width=20, height=5, bg="lightgreen", command=self.abrir_tela_notificacoes)
         btn_notificacoes.grid(row=0, column=1, padx=10, pady=10)
 
-        btn_realizar_aposta = tk.Button(btn_frame, text="Apostas", width=20, height=5, bg="lightpink")
-        btn_realizar_aposta.grid(row=0, column=2, padx=10, pady=10)
+        btn_realizar_aposta = tk.Button(btn_frame, text="Realizar Aposta", width=20, height=5, bg="lightpink", command=self.abrir_tela_criar_apostas)
+        btn_realizar_aposta.grid(row=1, column=0, padx=10, pady=10)
 
-        # btn_carteira = tk.Button(btn_frame, text="Carteira", width=20, height=5, bg="lightgreen")
-        # btn_carteira.grid(row=1, column=1, padx=10, pady=10)
+        btn_apostas = tk.Button(btn_frame, text="Apostas", width=20, height=5, bg="lightyellow", command=self.abrir_tela_apostas)
+        btn_apostas.grid(row=1, column=1, padx=10, pady=10)
 
         # Estilizando os botões para que tenham borda e sombra
         button_style = {
@@ -61,6 +54,7 @@ class PrincipalScreen(tk.Tk):
         btn_meu_perfil.config(**button_style)
         btn_notificacoes.config(**button_style)
         btn_realizar_aposta.config(**button_style)
+        btn_apostas.config(**button_style)
 
         # Adicionando sombra aos botões
         def add_shadow(widget):
@@ -70,6 +64,7 @@ class PrincipalScreen(tk.Tk):
         add_shadow(btn_meu_perfil)
         add_shadow(btn_notificacoes)
         add_shadow(btn_realizar_aposta)
+        add_shadow(btn_apostas)
     
     def abrir_tela_meuPerfil(self):
         self.destroy()
@@ -81,10 +76,15 @@ class PrincipalScreen(tk.Tk):
         cadastro_window = NotificacoesScreen()
         cadastro_window.mainloop()
 
-    # def abrir_tela_apostas(self):
-    #     self.destroy()
-    #     cadastro_window = PrincipalScreen()
-    #     cadastro_window.mainloop()
+    def abrir_tela_criar_apostas(self):
+        self.destroy()
+        cadastro_window = CriarApostaScreen()
+        cadastro_window.mainloop()
+
+    def abrir_tela_apostas(self):
+        self.destroy()
+        cadastro_window = ApostaScreen()
+        cadastro_window.mainloop()
 
 if __name__ == "__main__":
     app = PrincipalScreen()

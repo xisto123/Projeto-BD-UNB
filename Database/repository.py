@@ -1,6 +1,7 @@
 # Database/repository.py
 
 from .connection import get_connection
+from Services.global_data import TRANSACTION_CONN  # Importa diretamente o TRANSACTION_CONN
 
 # Mapeamento do nome da tabela para o nome da coluna da chave primária
 PK_MAP = {
@@ -29,18 +30,30 @@ PK_MAP = {
 }
 
 def _get_pk_column(table: str, primary_key_column: str = None) -> str:
-    """
-    Retorna a coluna que representa a chave primária para a tabela.
-    Se primary_key_column for fornecido, ele é utilizado; caso contrário,
-    é retornado o valor mapeado em PK_MAP ou 'id' como padrão.
-    """
     return primary_key_column if primary_key_column else PK_MAP.get(table, "id")
 
-def insert(table, data: dict):
+def _obter_conexao(conn):
+    """
+    Retorna a conexão a ser usada. Se um objeto de conexão for passado no parâmetro conn,
+    ele será utilizado. Caso contrário, se TRANSACTION_CONN estiver definido,
+    esse será utilizado. Se nenhum estiver definido, abre uma nova conexão.
+    
+    Retorna uma tupla: (conn, local_conn)
+    - conn: objeto de conexão.
+    - local_conn: booleano indicando se a conexão foi aberta localmente (True) ou não.
+    """
+    if conn is not None:
+        return conn, False
+    if TRANSACTION_CONN is not None:
+        return TRANSACTION_CONN, False
+    new_conn = get_connection()
+    return new_conn, True
+
+def insert(table, data: dict, conn=None):
     """
     Insere um registro na tabela especificada e retorna o ID gerado.
     """
-    conn = get_connection()
+    conn, local_conn = _obter_conexao(conn)
     cursor = conn.cursor()
     
     columns = ', '.join(data.keys())
@@ -52,17 +65,19 @@ def insert(table, data: dict):
     
     cursor.execute(query, values)
     new_id = cursor.fetchone()[0]
-    conn.commit()
-    cursor.close()
-    conn.close()
-    
+    if local_conn:
+        conn.commit()
+        cursor.close()
+        conn.close()
+    else:
+        cursor.close()
     return new_id
 
-def get(table, primary_key_value, primary_key_column=None):
+def get(table, primary_key_value, primary_key_column=None, conn=None):
     """
     Recupera um registro da tabela baseado na chave primária.
     """
-    conn = get_connection()
+    conn, local_conn = _obter_conexao(conn)
     cursor = conn.cursor()
     
     pk = _get_pk_column(table, primary_key_column)
@@ -71,15 +86,15 @@ def get(table, primary_key_value, primary_key_column=None):
     cursor.execute(query, (primary_key_value,))
     record = cursor.fetchone()
     cursor.close()
-    conn.close()
-    
+    if local_conn:
+        conn.close()
     return record
 
-def get_by(table, column, value):
+def get_by(table, column, value, conn=None):
     """
     Recupera registros da tabela onde a coluna tem determinado valor.
     """
-    conn = get_connection()
+    conn, local_conn = _obter_conexao(conn)
     cursor = conn.cursor()
     
     query = f"SELECT * FROM {table} WHERE {column} = %s;"
@@ -87,28 +102,29 @@ def get_by(table, column, value):
     records = cursor.fetchall()
     
     cursor.close()
-    conn.close()
-    
+    if local_conn:
+        conn.close()
     return records
 
-def get_all(table_name):
+def get_all(table_name, conn=None):
     """
     Recupera todos os registros da tabela especificada.
     Retorna uma lista de registros (tuplas).
     """
-    conn = get_connection()
+    conn, local_conn = _obter_conexao(conn)
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM {table_name}")
     records = cursor.fetchall()
     cursor.close()
-    conn.close()
+    if local_conn:
+        conn.close()
     return records
 
-def update(table, primary_key_value, data: dict, primary_key_column=None):
+def update(table, primary_key_value, data: dict, primary_key_column=None, conn=None):
     """
     Atualiza um registro na tabela especificada.
     """
-    conn = get_connection()
+    conn, local_conn = _obter_conexao(conn)
     cursor = conn.cursor()
     
     pk = _get_pk_column(table, primary_key_column)
@@ -118,50 +134,41 @@ def update(table, primary_key_value, data: dict, primary_key_column=None):
     
     query = f"UPDATE {table} SET {set_clause} WHERE {pk} = %s;"
     cursor.execute(query, values)
-    conn.commit()
-    
-    cursor.close()
-    conn.close()
-    
+    if local_conn:
+        conn.commit()
+        cursor.close()
+        conn.close()
+    else:
+        cursor.close()
     return True
 
-def delete(table, primary_key_value, primary_key_column=None):
+def delete(table, primary_key_value, primary_key_column=None, conn=None):
     """
     Exclui um registro da tabela especificada.
     """
-    conn = get_connection()
+    conn, local_conn = _obter_conexao(conn)
     cursor = conn.cursor()
     
     pk = _get_pk_column(table, primary_key_column)
     query = f"DELETE FROM {table} WHERE {pk} = %s;"
     
     cursor.execute(query, (primary_key_value,))
-    conn.commit()
-    
-    cursor.close()
-    conn.close()
-    
+    if local_conn:
+        conn.commit()
+        cursor.close()
+        conn.close()
+    else:
+        cursor.close()
     return True
 
 def call_sp_cadastrar_usuario_completo(p_nome, p_cpf, p_email, p_senha, p_id_tipo_usuario, p_dt_nascimento, foto_info):
     """
-    Chama a procedure armazenada cadastrar_usuario_bonus que realiza o cadastro completo do usuário.
-    
-    Parâmetros:
-      - p_nome, p_cpf, p_email, p_senha, p_id_tipo_usuario, p_dt_nascimento: dados do usuário;
-      - foto_info: dicionário com os dados da foto (ou None), contendo:
-          - 'binary_data': os dados binários,
-          - 'file_name': o nome do arquivo,
-          - 'mime_type': o MIME type,
-          - 'file_size_mb': o tamanho em MB.
-    
-    Retorna True se a procedure executar com sucesso, ou False em caso de erro.
+    Chama a procedure armazenada cadastrar_usuario_completo que realiza o cadastro completo do usuário.
     """
     try:
         conn = get_connection()
         cursor = conn.cursor()
         
-        # Se foto_info é None, passamos NULL para os parâmetros de foto
         if foto_info is None:
             foto_data = None
             foto_nome = None
@@ -197,33 +204,21 @@ def call_sp_cadastrar_usuario_completo(p_nome, p_cpf, p_email, p_senha, p_id_tip
         return False
 
 def fetch_apostas_em_andamento():
-    """
-    Recupera todas as apostas em andamento da view vw_apostas_em_andamento.
-    """
     conn = get_connection()
     cursor = conn.cursor()
-    
     query = "SELECT * FROM vw_apostas_em_andamento;"
     cursor.execute(query)
     rows = cursor.fetchall()
-    
     cursor.close()
     conn.close()
-    
     return rows
 
 def fetch_detalhes_times():
-    """
-    Recupera todos os detalhes dos times da view vw_detalhes_times.
-    """
     conn = get_connection()
     cursor = conn.cursor()
-    
     query = "SELECT * FROM vw_detalhes_times;"
     cursor.execute(query)
     rows = cursor.fetchall()
-    
     cursor.close()
     conn.close()
-    
     return rows
