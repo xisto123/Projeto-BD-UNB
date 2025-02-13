@@ -2,9 +2,11 @@
 
 import socket
 from Models.base_model import BaseModel
-from Database.repository import insert
 
 class Login(BaseModel):
+    table_name = "Login"
+    primary_key = "id_login"
+
     def __init__(self, id_login=None, id_usuario=None, dt_hora_login=None, endereco_ip=None, sucesso=None):
         self.id_login = id_login
         self.id_usuario = id_usuario
@@ -18,18 +20,3 @@ class Login(BaseModel):
     
     def get_local_ip():
         return socket.gethostbyname(socket.gethostname())
-
-    @classmethod
-    def create(cls, **kwargs):
-        """
-        Insere um novo registro no banco de dados e retorna uma instância da classe.
-        """
-        data = {
-            "id_usuario": kwargs.get("id_usuario"),
-            # "dt_hora_login": kwargs.get("dt_hora_login"),
-            "endereco_ip": cls.get_local_ip(),
-            "sucesso": kwargs.get("sucesso"),
-        }
-
-        new_id = insert("Login", data)
-        return cls(id_login=new_id, **kwargs)

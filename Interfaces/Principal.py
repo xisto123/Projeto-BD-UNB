@@ -1,10 +1,10 @@
 import tkinter as tk
 from Services.Helper.window_size import set_window_size
 import Services.global_data as global_data
-from Interfaces.VisualizarUsuario import PerfilScreen
+from Interfaces.Usuario.VisualizarUsuario import PerfilScreen
 from Interfaces.Notificacoes import NotificacoesScreen
-from Interfaces.CriarAposta import CriarApostaScreen
-from Interfaces.Aposta import ApostaScreen
+from Interfaces.Aposta.CriarAposta import CriarApostaScreen
+from Interfaces.Aposta.Aposta import ApostaScreen
 
 class PrincipalScreen(tk.Tk):
     def __init__(self):

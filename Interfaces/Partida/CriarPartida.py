@@ -76,7 +76,7 @@ class CriarPartidaScreen(tk.Tk):
         self.entry_estadio = tk.Entry(self.container)
         self.entry_estadio.grid(row=2, column=1, padx=5, pady=20, sticky="w")
         
-        lbl_horario_inicio = tk.Label(self.container, text="Data e Horário de Início (DD/MM/YYYY HH:MM):")
+        lbl_horario_inicio = tk.Label(self.container, text="Data e Horário de Início (YYYY-MM-DD HH:MM:SS):")
         lbl_horario_inicio.grid(row=2, column=2, padx=5, pady=20, sticky="e")
         self.entry_horario_inicio = tk.Entry(self.container)
         self.entry_horario_inicio.grid(row=2, column=3, padx=5, pady=20, sticky="w")
@@ -113,7 +113,6 @@ class CriarPartidaScreen(tk.Tk):
             return
         
         data = {
-            "id_partida": 23,
             "id_competicao": TipoCompeticao[tipo_competicao].value,
             "id_time_mandante": self.times_mapping.get(time_mandante),
             "id_time_visitante": self.times_mapping.get(time_visitante),

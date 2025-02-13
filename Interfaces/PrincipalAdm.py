@@ -1,10 +1,11 @@
 import tkinter as tk
 from Services.Helper.window_size import set_window_size
 import Services.global_data as global_data
-from Interfaces.CriarPartida import CriarPartidaScreen
-from Interfaces.Partida import PartidaScreen
+from Interfaces.Partida.CriarPartida import CriarPartidaScreen
+from Interfaces.Partida.Partida import PartidaScreen
 from Interfaces.DetalhesPartidas import DetalhesPartidasScreen
 from Interfaces.DetalhesTimes import DetalhesTimesScreen
+from Interfaces.GerarResultado import GerarResultadoScreen
 
 class PrincipalAdmScreen(tk.Tk):
     def __init__(self):
@@ -48,7 +49,7 @@ class PrincipalAdmScreen(tk.Tk):
             text="Partida",
             width=20,
             height=5,
-            bg="orchid",  # cor nova e diferenciada
+            bg="orchid",
             command=self.open_partida
         )
         btn_partida.grid(row=0, column=1, padx=10, pady=10)
@@ -58,7 +59,8 @@ class PrincipalAdmScreen(tk.Tk):
             text="Gerar Resultado",
             width=20,
             height=5,
-            bg="lightgreen"
+            bg="lightgreen",
+            command=self.open_gerar_resultado
         )
         btn_gerar_resultado.grid(row=0, column=2, padx=10, pady=10)
 
@@ -124,6 +126,11 @@ class PrincipalAdmScreen(tk.Tk):
         self.destroy() 
         tela_detalhes_partida = DetalhesPartidasScreen()
         tela_detalhes_partida.mainloop()
+
+    def open_gerar_resultado(self):
+        self.destroy() 
+        tela_gerar_resultado = GerarResultadoScreen()
+        tela_gerar_resultado.mainloop()
 
 if __name__ == "__main__":
     app = PrincipalAdmScreen()

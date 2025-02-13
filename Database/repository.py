@@ -203,6 +203,42 @@ def call_sp_cadastrar_usuario_completo(p_nome, p_cpf, p_email, p_senha, p_id_tip
         print("Erro ao cadastrar usuário completo via procedure:", e)
         return False
 
+def call_sp_encerrar_partida(p_id_partida, p_gols_mandante, p_gols_visitante,
+                             p_cartoes_amarelos_mandante, p_cartoes_amarelos_visitante,
+                             p_cartoes_vermelhos_mandante, p_cartoes_vermelhos_visitante,
+                             p_escanteios_mandante, p_escanteios_visitante,
+                             p_impedimentos_mandante, p_impedimentos_visitante,
+                             p_faltas_mandante, p_faltas_visitante, conn=None):
+    try:
+        conn = conn if conn is not None else get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "CALL encerrar_partida(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            [
+                p_id_partida,
+                p_gols_mandante,
+                p_gols_visitante,
+                p_cartoes_amarelos_mandante,
+                p_cartoes_amarelos_visitante,
+                p_cartoes_vermelhos_mandante,
+                p_cartoes_vermelhos_visitante,
+                p_escanteios_mandante,
+                p_escanteios_visitante,
+                p_impedimentos_mandante,
+                p_impedimentos_visitante,
+                p_faltas_mandante,
+                p_faltas_visitante
+            ]
+        )
+        conn.commit()
+        cursor.close()
+        if conn is None:
+            conn.close()
+        return True
+    except Exception as e:
+        print("Erro ao executar a procedure encerrar_partida:", e)
+        return False
+
 def fetch_apostas_em_andamento():
     conn = get_connection()
     cursor = conn.cursor()

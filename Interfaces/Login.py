@@ -1,7 +1,7 @@
 
 import tkinter as tk
 from tkinter import messagebox
-from Interfaces.Cadastro import CadastroScreen
+from Interfaces.Usuario.Cadastro import CadastroScreen
 from Interfaces.Principal import PrincipalScreen
 from Interfaces.PrincipalAdm import PrincipalAdmScreen
 from Services.Helper.window_size import set_window_size

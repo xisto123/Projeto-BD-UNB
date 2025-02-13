@@ -34,23 +34,6 @@ class Usuario(BaseModel):
         "Monteiro", "Moura", "Rocha", "Dias", "Nunes", "Vieira", "Cardoso", "Leite", "Cunha", "Campos"]
 
     @classmethod
-    def create(cls, **kwargs):
-        """
-        Insere um novo registro no banco de dados e retorna uma instância da classe.
-        """
-        data = {
-            "nome": kwargs.get("nome"),
-            "cpf": kwargs.get("cpf"),
-            "email": kwargs.get("email"),
-            "senha": kwargs.get("senha"),
-            "id_tipo_usuario": kwargs.get("id_tipo_usuario"),
-            "status": kwargs.get("status", "ativo"),
-            "dt_nascimento": kwargs.get("dt_nascimento")
-        }
-        new_id = insert("Usuario", data)
-        return cls(id_usuario=new_id, **kwargs)
-
-    @classmethod
     def get_by_cpf(cls, cpf):
         """
         Consulta a tabela de Usuario buscando pelo CPF.

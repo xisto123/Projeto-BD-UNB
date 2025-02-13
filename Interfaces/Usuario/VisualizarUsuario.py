@@ -1,10 +1,15 @@
+import os
+import mimetypes
+import datetime
 import tkinter as tk
 from tkinter import messagebox
+from Services.Helper.window_size import set_window_size
 from Enums.tipos_apoio import TipoUsuario
 from Models.usuario import Usuario
 import Services.global_data as global_data
-from Services.Helper.window_size import set_window_size
-from Interfaces.EditarUsuario import EditarUsuarioScreen
+import Models.arquivo as Arquivo
+from PIL import Image, ImageTk
+import io
 
 class PerfilScreen(tk.Tk):
     def __init__(self):
@@ -19,18 +24,15 @@ class PerfilScreen(tk.Tk):
         top_frame = tk.Frame(self)
         top_frame.pack(side=tk.TOP, fill=tk.X, pady=10)
 
-        if global_data.usuario_foto is not None:
-            # A foto deve estar em um formato compatível com Tkinter
-            self.lbl_foto = tk.Label(top_frame, image=global_data.usuario_foto)
-        else:
-            self.lbl_foto = tk.Label(top_frame, text="Foto não disponível", width=18, height=10, relief="solid")
+        # Inicialmente, exibe mensagem caso a foto não esteja disponível
+        self.lbl_foto = tk.Label(top_frame, text="Foto não disponível", width=200, height=200, relief="solid")
         self.lbl_foto.pack(anchor="center")
 
         # Container principal centralizado
         self.container = tk.Frame(self)
-        self.container.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        self.container.place(relx=0.5, rely=0.65, anchor=tk.CENTER)
         
-        # Linha 1: Nome e CPF (apenas visualização)
+        # Linha 1: Nome e CPF
         self.label_nome = tk.Label(self.container, text="Nome:")
         self.label_nome.grid(row=1, column=0, padx=10, pady=10, sticky="e")
         self.lbl_nome_valor = tk.Label(self.container, text="", relief="sunken", width=30)
@@ -75,7 +77,6 @@ class PerfilScreen(tk.Tk):
 
     def buscar_usuario(self):
         usuario = Usuario.get_by_id(global_data.usuario_id)
-
         if usuario:
             self.lbl_nome_valor.config(text=usuario.nome)
             self.lbl_cpf_valor.config(text=usuario.cpf)
@@ -83,11 +84,35 @@ class PerfilScreen(tk.Tk):
             self.lbl_password_valor.config(text=usuario.senha)
             self.lbl_tipo_usuario_valor.config(text=TipoUsuario(usuario.id_tipo_usuario).name)
             self.lbl_data_nascimento_valor.config(text=usuario.dt_nascimento)
+            
+            # Busca a foto do usuário na tabela Arquivo utilizando o método get_by
+            arquivo_records = Arquivo.Arquivo.get_by("id_usuario", usuario.id_usuario)
+            if arquivo_records and len(arquivo_records) > 0:
+                # Supondo que a coluna na posição 6 contenha os dados binários da imagem
+                arquivo = arquivo_records[0]
+                foto_binary = arquivo[6]
+                try:
+                    # Converte os dados binários em imagem
+                    image = Image.open(io.BytesIO(foto_binary))
+
+                    # **FORÇA O TAMANHO EXATO DA IMAGEM** (400x400 pixels)
+                    image = image.resize((350, 350), Image.LANCZOS)
+
+                    # Converte para o formato Tkinter
+                    photo = ImageTk.PhotoImage(image)
+
+                    # Define a imagem na Label
+                    self.lbl_foto.config(image=photo, text="", width=400, height=400)
+                    self.lbl_foto.image = photo  # Mantém referência para evitar garbage collection
+                except Exception as e:
+                    self.lbl_foto.config(text="Erro ao carregar foto")
+                    print("Erro ao converter foto:", e)
+            else:
+                self.lbl_foto.config(text="Foto não disponível")
         else:
             messagebox.showerror("Erro", "Usuário não encontrado.")
 
     def excluir_usuario(self):
-        # Confirmação de exclusão
         resposta = messagebox.askyesno("Confirmação", "Deseja excluir o usuário?")
         if resposta:
             if Usuario.excluir(global_data.usuario_id):
@@ -99,6 +124,7 @@ class PerfilScreen(tk.Tk):
     def editar_usuario(self):
         try:
             self.destroy()
+            from Interfaces.Usuario.EditarUsuario import EditarUsuarioScreen
             tela_edicao = EditarUsuarioScreen()
             tela_edicao.mainloop()
         except ImportError:

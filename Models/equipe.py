@@ -11,3 +11,6 @@ class Equipe(BaseModel):
     
     def __str__(self):
         return (f"Equipe(id_equipe={self.id_equipe}, nome={self.nome}, pais={self.pais})")
+    
+    def get_nome_by_id(id_equipe):
+        return Equipe.get(id_equipe)[1]

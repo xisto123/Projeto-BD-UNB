@@ -3,7 +3,6 @@
 usuario_id = None
 usuario_nome = None
 usuario_tipo = None
-usuario_foto = None
 
 # Se TRANSACTION_CONN for None, as funções da repository usarão get_connection() normalmente.
 # Caso contrário, usarão essa conexão compartilhada.
