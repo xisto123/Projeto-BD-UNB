@@ -3,4 +3,4 @@
 DB_HOST = "localhost"
 DB_NAME = "postgres"
 DB_USER = "postgres"
-DB_PASSWORD = "Teste1532!"
+DB_PASSWORD = "SUA_SENHA"
