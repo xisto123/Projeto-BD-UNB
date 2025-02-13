@@ -68,8 +68,8 @@ BEGIN
     -- Percorre todos os mercados disponíveis na tabela Mercado_Aposta
     FOR v_id_mercado IN (SELECT id_mercado FROM Mercado_Aposta) LOOP
         
-        -- Gera um valor aleatório entre 1.0 e 10.0, arredondado para 2 casas decimais.
-        v_random_odd := ROUND((1.0 + (random() * 9.0))::numeric, 2); 
+        -- Gera um valor aleatório entre 1.0 e 6.0, arredondado para 2 casas decimais.
+        v_random_odd := ROUND((1.0 + (random() * 6.0))::numeric, 2); 
         
         -- Insere uma nova odd associada à nova partida e ao mercado de aposta
         INSERT INTO Odd (id_partida, id_mercado, valor, descricao, dt_hora_criacao)

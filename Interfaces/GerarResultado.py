@@ -1,10 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-import datetime
 from Services.Helper.window_size import set_window_size
 import Models.partida as Partida
 import Models.equipe as Equipe
-import Services.encerrar_partida_service as encerrar_service  # Serviço que processa o encerramento da partida
+import Services.encerrar_partida_service as encerrar_service
 
 class GerarResultadoScreen(tk.Tk):
     def __init__(self):
@@ -97,7 +96,7 @@ class GerarResultadoScreen(tk.Tk):
             return
         
         try:
-            # Coleta os valores inseridos nos campos, convertendo para float
+            # Coleta os valores inseridos nos campos, convertendo para int
             home_data = { field: int(self.home_entries[field].get()) for field in self.fields }
             away_data = { field: int(self.away_entries[field].get()) for field in self.fields }
         except ValueError:

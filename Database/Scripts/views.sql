@@ -56,7 +56,7 @@ LEFT JOIN Transacao t ON c.id_carteira = t.id_carteira
 GROUP BY u.id_usuario, u.nome, c.saldo;
 
 
--- Criar ou substituir a view: Resumo de Estatísticas dos Times
+-- Criar a view: Resumo de Estatísticas dos Times
 CREATE OR REPLACE VIEW vw_detalhes_times AS
 WITH dados AS (
   SELECT 
@@ -103,7 +103,7 @@ GROUP BY time_nome
 ORDER BY "Vitórias" DESC, "Saldo de Gols" DESC;
 
 
--- Criar ou substituir a view: Apostas em Andamento da Partida
+-- Criar a view: Apostas em Andamento da Partida
 CREATE OR REPLACE VIEW vw_apostas_em_andamento AS
 SELECT
   p.id_partida                                   AS "ID Partida",
@@ -115,7 +115,7 @@ SELECT
   COALESCE(SUM(a.valor), 0)                      AS "Total Apostado"
 FROM Partida p
 JOIN Competicao comp ON p.id_competicao = comp.id_competicao
-JOIN Tipo_Partida tp ON p.id_tipo_partida = tp.id_tipo_partida  -- ajuste conforme sua modelagem
+JOIN Tipo_Partida tp ON p.id_tipo_partida = tp.id_tipo_partida
 JOIN Equipe t1 ON p.id_time_mandante = t1.id_equipe
 JOIN Equipe t2 ON p.id_time_visitante = t2.id_equipe
 JOIN Odd o ON p.id_partida = o.id_partida

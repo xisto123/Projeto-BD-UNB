@@ -21,11 +21,6 @@ def login(cpf, senha):
             print("CPF ou senha incorretos.")
 
         # Registrar a tentativa de login usando o método de criação da Model Login
-        # Login.create(
-        #     id_usuario=usuario.id_usuario if usuario else None,
-        #     sucesso=sucesso,
-        # )
-
         data = {
             "id_usuario": usuario.id_usuario if usuario else None,
             "endereco_ip": Login.get_local_ip(),

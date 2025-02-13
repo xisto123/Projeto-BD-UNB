@@ -27,7 +27,7 @@ DECLARE
     v_payout            NUMERIC;
     v_expected_result   INTEGER;
 BEGIN
-    -- 1. Atualiza o status da partida para "Encerrada" (supondo que id_status_partida = 3 é "Encerrada")
+    -- 1. Atualiza o status da partida para "Encerrada"
     UPDATE Partida
       SET id_status_partida = 3
     WHERE id_partida = p_id_partida;
@@ -38,7 +38,7 @@ BEGIN
       FROM Partida
      WHERE id_partida = p_id_partida;
     
-    -- 3. Insere os resultados completos da partida para cada equipe
+    -- 3. Insere os resultados da partida para cada equipe
     INSERT INTO Resultado_Partida_Equipe (
          id_partida, id_equipe, gols_marcados, gols_sofridos, 
          cartoes_amarelos, cartoes_vermelhos, escanteios, impedimentos, faltas_cometidas
@@ -62,9 +62,9 @@ BEGIN
           JOIN Odd o ON a.id_odd = o.id_odd
          WHERE o.id_partida = p_id_partida AND a.status = 'ativa'
     LOOP
-        -- Calcula o resultado esperado conforme o mercado
+        -- Calcula o resultado esperado conforme o mercado apostado
         v_expected_result := CASE rec.id_mercado
-            WHEN 1 THEN (p_gols_mandante + p_gols_visitante) 
+            WHEN 1 THEN (p_gols_mandante + p_gols_visitante)
             WHEN 2 THEN (p_escanteios_mandante + p_escanteios_visitante)
             WHEN 3 THEN (p_cartoes_amarelos_mandante + p_cartoes_amarelos_visitante)
             WHEN 4 THEN (p_cartoes_vermelhos_mandante + p_cartoes_vermelhos_visitante)
@@ -73,6 +73,7 @@ BEGIN
             ELSE NULL
         END;
         
+        -- Verifica se o resultado apostado bate exatamente com o resultado esperado
         IF rec.resultado = v_expected_result THEN
             -- Aposta vencedora: calcula o pagamento (valor apostado × odd)
             v_payout := rec.valor * rec.odd_valor;
@@ -85,7 +86,8 @@ BEGIN
             
             -- Atualiza o saldo da carteira, creditando o pagamento
             UPDATE Carteira
-               SET saldo = v_saldo + v_payout
+               SET saldo = v_saldo + v_payout,
+                   dt_hora_atualizacao = CURRENT_TIMESTAMP
              WHERE id_carteira = v_id_carteira;
             
             -- Registra a transação de pagamento (id_tipo_transacao = 1 para PAGAMENTO)
@@ -96,7 +98,7 @@ BEGIN
             INSERT INTO Resultado_Aposta (id_aposta, valor_recebido, id_status_resultado_aposta)
             VALUES (rec.id_aposta, v_payout, 1);
             
-            -- Envia notificação ao usuário informando que ganhou a aposta (usando id_tipo_notificacao = 4 para VOCE_GANHOU)
+            -- Notifica o usuário informando que ganhou a aposta (id_tipo_notificacao = 4 para VOCE_GANHOU)
             INSERT INTO Notificacao (id_usuario, id_tipo_notificacao, titulo, conteudo)
             VALUES (rec.id_usuario, 4, 'Pagamento de Aposta Vencedora',
                     'Sua aposta na partida ' || p_id_partida || ' foi paga. Valor recebido: ' || v_payout);
@@ -105,7 +107,7 @@ BEGIN
             INSERT INTO Resultado_Aposta (id_aposta, valor_recebido, id_status_resultado_aposta)
             VALUES (rec.id_aposta, 0, 2);
             
-            -- Notifica o usuário que a aposta não foi bem-sucedida (usando id_tipo_notificacao = 5 para VOCE_PERDEU)
+            -- Notifica o usuário que a aposta não foi bem-sucedida (id_tipo_notificacao = 5 para VOCE_PERDEU)
             INSERT INTO Notificacao (id_usuario, id_tipo_notificacao, titulo, conteudo)
             VALUES (rec.id_usuario, 5, 'Aposta Perdida',
                     'Sua aposta na partida ' || p_id_partida || ' não foi bem-sucedida.');
@@ -153,16 +155,16 @@ BEGIN
         );
     END IF;
     
-    -- 3. Inserir notificação de Bem-vindo (assumindo id_tipo_notificacao = 7 para BEM_VINDO)
+    -- 3. Inserir notificação de Bem-vindo
     INSERT INTO Notificacao (id_tipo_notificacao, titulo, conteudo, dt_hora_envio, id_usuario)
     VALUES (7, 'Bem-vindo!', 'Seja bem-vindo ao sistema!', CURRENT_TIMESTAMP, v_id_usuario);
     
-    -- 4. Criar carteira para o usuário na tabela Carteira (assumindo id_status_carteira = 1 para ativo)
+    -- 4. Criar carteira para o usuário na tabela Carteira
     INSERT INTO Carteira (id_usuario, tipo, saldo, id_status_carteira, dt_hora_registro, dt_hora_atualizacao)
     VALUES (v_id_usuario, 'principal', 0.00, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     RETURNING id_carteira INTO v_id_carteira;
     
-    -- 5. Inserir transação de bônus na tabela Transacao (assumindo id_tipo_transacao = 4 para bônus)
+    -- 5. Inserir transação de bônus na tabela Transacao
     INSERT INTO Transacao (id_carteira, id_tipo_transacao, valor, descricao, dt_hora)
     VALUES (v_id_carteira, 4, 500.00, 'Bônus de cadastro', CURRENT_TIMESTAMP);
     
@@ -172,7 +174,7 @@ BEGIN
            dt_hora_atualizacao = CURRENT_TIMESTAMP
      WHERE id_carteira = v_id_carteira;
     
-    -- 7. Inserir notificação informando que o usuário recebeu bônus (assumindo id_tipo_notificacao = 8 para VOCE_RECEBEU_BONUS)
+    -- 7. Inserir notificação informando que o usuário recebeu bônus
     INSERT INTO Notificacao (id_tipo_notificacao, titulo, conteudo, dt_hora_envio, id_usuario)
     VALUES (8, 'Você recebeu bônus!', 'Um bônus de 500 foi creditado em sua carteira.', CURRENT_TIMESTAMP, v_id_usuario);
     

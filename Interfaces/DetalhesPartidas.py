@@ -36,7 +36,6 @@ class DetalhesPartidasScreen(tk.Tk):
             self.table.insert("", "end", values=row)
 
     def on_close(self):
-        # Lógica de limpeza se necessário antes de fechar a janela
         self.destroy()
 
 if __name__ == "__main__":

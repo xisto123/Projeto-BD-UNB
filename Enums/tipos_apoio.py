@@ -50,13 +50,6 @@ class FaseCompeticao(Enum):
     SEMIFINAL = 3
     FINAL = 4
 
-class StatusResultadoAposta(Enum):
-    GANHO = 1
-    PERDA = 2
-    REEMBOLSADO = 3
-    CANCELADO = 4
-    AGUARDANDO_RESULTADO = 5
-
 class TipoPartida(Enum):
     REGULAR = 1
     AMISTOSO = 2
@@ -69,4 +62,11 @@ class StatusPartida(Enum):
     EM_ANDAMENTO = 2
     ENCERRADA = 3
     CANCELADA = 4
-    ADIANTADA = 5
+    ADIADA = 5
+
+class StatusResultadoAposta(Enum):
+    GANHO = 1
+    PERDA = 2
+    REEMBOLSADO = 3
+    CANCELADO = 4
+    AGUARDANDO_RESULTADO = 5

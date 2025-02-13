@@ -40,7 +40,7 @@ class PrincipalAdmScreen(tk.Tk):
             width=20,
             height=5,
             bg="lightblue",
-            command=self.open_criar_partida   # Agora abre CriarPartidaScreen
+            command=self.open_criar_partida
         )
         btn_criar_partida.grid(row=0, column=0, padx=10, pady=10)
 
