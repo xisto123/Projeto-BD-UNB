@@ -28,7 +28,7 @@ O projeto busca aplicar os conceitos fundamentais de banco de dados relacionais,
 - Administrador (cpf: 67890123456 // senha: senha123)
 - Apostador (cpf: 01234567890 // senha: senha123)
 
-# Comandos Uteis
+# Comandos Importantes
 - pip install psycopg2-binary ( Para fazer a conexão com o banco )
 - pip install Pillow ( Imagens )
 
