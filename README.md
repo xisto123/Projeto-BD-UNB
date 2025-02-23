@@ -58,11 +58,7 @@ Instale as dependências do projeto executando:
  - pip install -r requirements.txt
 
 4. **Configuração das Variáveis de Ambiente**
-Crie e/ou ajuste o arquivo .env na raiz do projeto com as seguintes variáveis:
-DB_HOST=localhost
-DB_NAME=postgres
-DB_USER=postgres
-DB_PASSWORD=Teste1532!
+Crie e/ou ajuste o arquivo .env na raiz do projeto
 
 5. **Execução do Projeto**
  - python main.py
