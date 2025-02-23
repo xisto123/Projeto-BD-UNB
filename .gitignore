@@ -1,0 +1,7 @@
+# Ignorar arquivos de credenciais
+.env
+
+# Ignorar pastas de dependências
+__pycache__/
+venv/
+.venv/

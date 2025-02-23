@@ -28,10 +28,6 @@ O projeto busca aplicar os conceitos fundamentais de banco de dados relacionais,
 - Administrador (cpf: 67890123456 // senha: senha123)
 - Apostador (cpf: 01234567890 // senha: senha123)
 
-# Comandos Importantes
-- pip install psycopg2-binary ( Para fazer a conexão com o banco )
-- pip install Pillow ( Imagens )
-
 # Documentação do Projeto
 1. Introdução
 O Sistema de Apostas é uma aplicação que permite aos usuários realizarem apostas em partidas esportivas, 
@@ -46,3 +42,27 @@ Models/: Contém o mapeamento das entidades do Bando de Dados.
 Services/: Implementa a lógica de negócio e manipulação dos dados.
 main.py: Ponto de entrada do sistema.
 README.md: Documentação geral do projeto.
+
+## Configuração do Ambiente
+
+1. **Criação do Ambiente Virtual**
+Crie o ambiente virtual utilizando o comando abaixo:
+ - python -m venv .venv
+
+2. **Ativação do Ambiente Virtual (Windows)**
+Ative o ambiente virtual:
+ - .venv\Scripts\activate
+
+3. **Instalação das Dependências**
+Instale as dependências do projeto executando:
+ - pip install -r requirements.txt
+
+4. **Configuração das Variáveis de Ambiente**
+Crie e/ou ajuste o arquivo .env na raiz do projeto com as seguintes variáveis:
+DB_HOST=localhost
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=Teste1532!
+
+5. **Execução do Projeto**
+ - python main.py
